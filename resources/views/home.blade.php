@@ -47,7 +47,7 @@
                                     </span>
                                 @else
                                     <a href="{{ route('admin.dashboard') }}" class="px-3 py-1 text-sm font-medium text-gray-700 hover:text-blue-600 flex items-center">
-                                        
+
                                     </a>
                                 @endif
                             </div>
@@ -136,38 +136,8 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12">
+    <footer class="bg-gray-800 text-white">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="font-bold text-xl mb-4">TokoOnline</h3>
-                    <p class="text-gray-400">Menyediakan berbagai produk berkualitas dengan harga terbaik.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Tautan Cepat</h4>
-                    <ul class="space-y-2">
-                        <li><a href="{{ route('home') }}" class="text-gray-400 hover:text-white transition duration-300">Beranda</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Produk</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Tentang Kami</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Kontak</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Kategori</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Elektronik</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Fashion</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Rumah Tangga</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Olahraga</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Hubungi Kami</h4>
-                    <p class="text-gray-400 mb-2">Email: info@tokoonline.com</p>
-                    <p class="text-gray-400 mb-2">Telepon: (021) 12345678</p>
-                    <p class="text-gray-400">Alamat: Jl. Contoh No. 123, Jakarta</p>
-                </div>
-            </div>
             <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
                 <p>&copy; {{ date('Y') }} TokoOnline. All rights reserved.</p>
             </div>
@@ -175,7 +145,6 @@
     </footer>
 
     <script>
-        // Toggle Mobile Menu
         document.querySelector('.mobile-menu-button').addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
