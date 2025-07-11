@@ -41,15 +41,15 @@
                         <!-- Admin Sudah Login -->
                         <div class="relative ml-3">
                             <div class="flex items-center space-x-2">
-                                <a href="{{ route('admin.dashboard') }}" class="px-3 py-1 text-sm font-medium text-gray-700 hover:text-blue-600 flex items-center">
-                                    <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
-                                </a>
-                                <form method="POST" action="{{ route('admin.logout') }}">
-                                    @csrf
-                                    <button type="submit" class="px-3 py-1 text-sm font-medium text-gray-700 hover:text-red-600 flex items-center">
-                                        <i class="fas fa-sign-out-alt mr-1"></i> Logout
-                                    </button>
-                                </form>
+                                @if(request()->routeIs('admin.dashboard'))
+                                    <span class="px-3 py-1 text-sm font-medium text-gray-700 flex items-center">
+                                        <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
+                                    </span>
+                                @else
+                                    <a href="{{ route('admin.dashboard') }}" class="px-3 py-1 text-sm font-medium text-gray-700 hover:text-blue-600 flex items-center">
+                                        <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     @else
@@ -83,11 +83,11 @@
                         <div class="text-sm font-medium text-gray-800">Admin Dashboard</div>
                     </div>
                     <div class="mt-3 px-2 space-y-1">
-                        <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">Dashboard</a>
-                        <form method="POST" action="{{ route('admin.logout') }}">
-                            @csrf
-                            <button type="submit" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-red-600 hover:bg-red-50">Logout</button>
-                        </form>
+                        @if(request()->routeIs('admin.dashboard'))
+                            <span class="block px-3 py-2 rounded-md text-base font-medium text-gray-600">Dashboard</span>
+                        @else
+                            <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">Dashboard</a>
+                        @endif
                     </div>
                 @else
                     <a href="{{ route('admin.login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">Login Admin</a>
@@ -105,35 +105,35 @@
         </div>
     </div>
 
-<!-- Product Section -->
-<section id="products" class="container mx-auto px-6 py-12">
-    <h2 class="text-3xl font-bold text-gray-800 mb-8">Daftar Produk</h2>
+    <!-- Product Section -->
+    <section id="products" class="container mx-auto px-6 py-12">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8">Daftar Produk</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        @foreach($products as $product)
-        <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
-            <div class="relative">
-                <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
-                @if($product->stock > 0)
-                    <span class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">Tersedia</span>
-                @else
-                    <span class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">Habis</span>
-                @endif
-            </div>
-            <div class="p-4">
-                <h3 class="font-bold text-xl mb-2 text-gray-800">{{ $product->name }}</h3>
-                <p class="text-gray-600 text-sm mb-4">{{ Str::limit($product->description, 60) }}</p>
-                <div class="flex justify-between items-center">
-                    <span class="font-bold text-gray-800">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                    <a href="{{ route('product.order', $product->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300">
-                        <i class="fas fa-cart-plus"></i> Beli
-                    </a>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            @foreach($products as $product)
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300">
+                <div class="relative">
+                    <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
+                    @if($product->stock > 0)
+                        <span class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">Tersedia</span>
+                    @else
+                        <span class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">Habis</span>
+                    @endif
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-xl mb-2 text-gray-800">{{ $product->name }}</h3>
+                    <p class="text-gray-600 text-sm mb-4">{{ Str::limit($product->description, 60) }}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-800">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                        <a href="{{ route('product.order', $product->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+                            <i class="fas fa-cart-plus"></i> Beli
+                        </a>
+                    </div>
                 </div>
             </div>
+            @endforeach
         </div>
-        @endforeach
-    </div>
-</section>
+    </section>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12">
