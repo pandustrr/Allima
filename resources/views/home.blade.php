@@ -47,7 +47,7 @@
                                     </span>
                                 @else
                                     <a href="{{ route('admin.dashboard') }}" class="px-3 py-1 text-sm font-medium text-gray-700 hover:text-blue-600 flex items-center">
-                                        <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
+                                        
                                     </a>
                                 @endif
                             </div>
@@ -86,7 +86,7 @@
                         @if(request()->routeIs('admin.dashboard'))
                             <span class="block px-3 py-2 rounded-md text-base font-medium text-gray-600">Dashboard</span>
                         @else
-                            <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">Dashboard</a>
+                            <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50"></a>
                         @endif
                     </div>
                 @else
