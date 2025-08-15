@@ -5,7 +5,7 @@
             <div class="flex items-center">
                 <!-- Logo -->
                 <a href="<?php echo e(route('home')); ?>" class="flex items-center">
-                    <span class="text-xl font-bold text-[#0ABAB5]">Toko<span class="text-gray-800">Buku</span></span>
+                    <span class="text-xl font-bold text-gray-800">'Allima</span>
                 </a>
 
                 <!-- Menu Desktop -->
