@@ -118,18 +118,18 @@
                             <!-- Form Pemesanan -->
                             <form id="orderForm" class="mt-6 space-y-4">
                                 <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label for="customer_name" class="block text-sm font-medium text-gray-700 mb-1">
                                         Nama Lengkap <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" id="name" name="name" required
+                                    <input type="text" id="customer_name" name="customer_name" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#0ABAB5] focus:border-[#0ABAB5]">
                                 </div>
 
                                 <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                                    <label for="pgtpq" class="block text-sm font-medium text-gray-700 mb-1">
                                         PGTPQ <span class="text-red-500">*</span>
                                     </label>
-                                    <input type="text" id="name" name="name" required
+                                    <input type="text" id="pgtpq" name="pgtpq" required
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#0ABAB5] focus:border-[#0ABAB5]">
                                 </div>
 
@@ -157,12 +157,11 @@
                                         <i class="fas fa-arrow-left mr-2"></i>
                                         Kembali
                                     </a>
-                                    <a href="#" id="whatsappBtn"
+                                    <button type="button" id="whatsappBtn"
                                         class="flex-1 bg-[#25D366] hover:bg-[#128C7E] text-white font-medium py-2 px-4 rounded-md shadow-sm flex items-center justify-center transition duration-150 ease-in-out">
                                         <i class="fab fa-whatsapp mr-2 text-lg"></i>
-                                        Pesan
-                                    </a>
-
+                                        Pesan via WhatsApp
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -173,50 +172,49 @@
     </div>
 
     <script>
-        function generateWhatsAppMessage() {
-            const name = document.getElementById('name').value || '[Belum diisi]';
-            const address = document.getElementById('address').value || '[Belum diisi]';
-            const notes = document.getElementById('notes').value || '-';
-
-            // Buat daftar produk
-            let productsText = '';
-            <?php $__currentLoopData = $cart->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                productsText += `- <?php echo $item->product->judul; ?>
-
-                (Oleh: <?php echo $item->product->penulis; ?>)
-                Jumlah: <?php echo e($item->quantity); ?> x Rp <?php echo e(number_format($item->product->harga, 0, ',', '.')); ?>
-
-                Subtotal: Rp <?php echo e(number_format($item->subtotal, 0, ',', '.')); ?>\n\n`;
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
-            // Pesan dikirim
-            const message = `*PEMESANAN BUKU*
-
-            *Produk yang dipesan:*
-            ${productsText}
-            *Total Pembayaran:* Rp <?php echo e(number_format($cart->total, 0, ',', '.')); ?>
-
-
-            *Data Pemesan:*
-            Nama: ${name}
-            Alamat: ${address}
-
-            *Catatan:* ${notes}
-
-            Mohon konfirmasi ketersediaan dan total pembayaran termasuk ongkos kirim. Terima kasih! 🙏`;
-
-            return message;
-        }
-
-        function updateWhatsAppLink() {
+        document.addEventListener('DOMContentLoaded', function() {
             const whatsappBtn = document.getElementById('whatsappBtn');
-            const message = encodeURIComponent(generateWhatsAppMessage());
-            whatsappBtn.href = `https://wa.me/62895352729214?text=${message}`;
-        }
 
-        document.getElementById('orderForm').addEventListener('input', updateWhatsAppLink);
+            whatsappBtn.addEventListener('click', function(e) {
+                e.preventDefault();
 
-        document.addEventListener('DOMContentLoaded', updateWhatsAppLink);
+                // Ambil data form
+                const name = document.getElementById('customer_name').value || '[Belum diisi]';
+                const pgtpq = document.getElementById('pgtpq').value || '[Belum diisi]';
+                const address = document.getElementById('address').value || '[Belum diisi]';
+                const notes = document.getElementById('notes').value || '-';
+
+                // Buat pesan
+                let message = `*PEMESANAN BUKU*\n\n`;
+
+                // Data Pemesan
+                message += `*DATA PEMESAN*\n`;
+                message += `Nama Lengkap : ${name}\n`;
+                message += `PGTPQ        : ${pgtpq}\n`;
+                message += `Alamat       : ${address}\n`;
+                message += `Catatan      : ${notes}\n\n`;
+
+                // Detail Pesanan
+                message += `*DETAIL PESANAN*\n`;
+                <?php $__currentLoopData = $cart->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    message += `--------------------------------\n`;
+                    message += `*Judul Buku*  : <?php echo $item->product->judul; ?>\n`;
+                    message += `Harga Satuan  : Rp <?php echo number_format($item->product->harga, 0, ',', '.'); ?>\n`;
+                    message += `Jumlah        : <?php echo $item->quantity; ?> buku\n`;
+                    message += `Subtotal      : Rp <?php echo number_format($item->subtotal, 0, ',', '.'); ?>\n`;
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                // Total
+                message += `\n*TOTAL PEMBAYARAN*: Rp <?php echo number_format($cart->total, 0, ',', '.'); ?>\n\n`;
+                message +=
+                    `Mohon konfirmasi ketersediaan buku dan informasi total pembayaran termasuk ongkos kirim.\n`;
+                message += `Terima kasih 🙏`;
+
+                // Kirim ke WhatsApp
+                const encodedMessage = encodeURIComponent(message);
+                window.open(`https://wa.me/62895352729214?text=${encodedMessage}`, '_blank');
+            });
+        });
     </script>
 <?php $__env->stopSection(); ?>
 

@@ -18,27 +18,41 @@ class CartController extends Controller
 
     public function store(Request $request, Product $product)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1|max:' . $product->stok
-        ]);
+        // Validasi stok
+        if ($product->stok < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stok produk habis'
+            ], 400);
+        }
 
         $cart = $this->getCart();
-
-        // Cek apakah produk sudah ada di keranjang
         $existingItem = $cart->items()->where('product_id', $product->id)->first();
 
         if ($existingItem) {
-            $existingItem->update([
-                'quantity' => $existingItem->quantity + $request->quantity
-            ]);
+            $newQuantity = $existingItem->quantity + ($request->quantity ?? 1);
+
+            if ($newQuantity > $product->stok) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jumlah melebihi stok'
+                ], 400);
+            }
+
+            $existingItem->update(['quantity' => $newQuantity]);
         } else {
             $cart->items()->create([
                 'product_id' => $product->id,
-                'quantity' => $request->quantity
+                'quantity' => $request->quantity ?? 1,
+                'price' => $product->harga
             ]);
         }
 
-        return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan ke keranjang');
+        return response()->json([
+            'success' => true,
+            'message' => 'Ditambahkan ke keranjang',
+            'cartCount' => $cart->items()->sum('quantity')
+        ]);
     }
 
     public function update(Request $request, CartItem $item)
@@ -49,13 +63,13 @@ class CartController extends Controller
 
         $item->update(['quantity' => $request->quantity]);
 
-        return back()->with('success', 'Jumlah produk berhasil diupdate');
+        return back()->with('success', 'Jumlah produk berhasil diperbarui');
     }
 
     public function destroy(CartItem $item)
     {
         $item->delete();
-        return back()->with('success', 'Produk berhasil dihapus dari keranjang');
+        return back()->with('success', 'Produk berhasil dihapus');
     }
 
     private function getCart()
@@ -65,6 +79,6 @@ class CartController extends Controller
             $sessionId = Str::random(40);
             session()->put('cart_session_id', $sessionId);
         }
-        return Cart::firstOrCreate(['session_id' => $sessionId]);
+        return Cart::with(['items.product'])->firstOrCreate(['session_id' => $sessionId]);
     }
 }
