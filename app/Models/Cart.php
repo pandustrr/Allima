@@ -9,25 +9,27 @@ class Cart extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['session_id'];
+    protected $fillable = ['user_id'];
 
-    // Hapus relasi ke user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function items()
     {
         return $this->hasMany(CartItem::class);
     }
 
-    public function products()
+    public function getTotalItemsAttribute()
     {
-        return $this->belongsToMany(Product::class, 'cart_items')
-            ->withPivot('quantity')
-            ->withTimestamps();
+        return $this->items->sum('quantity');
     }
 
-    public function getTotalAttribute()
+    public function getTotalPriceAttribute()
     {
         return $this->items->sum(function ($item) {
-            return $item->product->harga * $item->quantity;
+            return $item->price * $item->quantity;
         });
     }
 }

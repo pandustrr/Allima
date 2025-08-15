@@ -9,7 +9,7 @@ class CartItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['cart_id', 'product_id', 'quantity'];
+    protected $fillable = ['cart_id', 'product_id', 'quantity', 'price'];
 
     public function cart()
     {
@@ -21,9 +21,8 @@ class CartItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    // Hitung subtotal untuk item ini
     public function getSubtotalAttribute()
     {
-        return $this->product->harga * $this->quantity;
+        return $this->price * $this->quantity;
     }
 }

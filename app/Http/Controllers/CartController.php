@@ -6,19 +6,27 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    public function __construct()
+    {
+        // $this->middleware('auth');
+    }
+
     public function index()
     {
-        $cart = $this->getCart();
+        $cart = Auth::user()->cart()->with(['items.product'])->firstOrCreate();
         return view('keranjang', compact('cart'));
     }
 
     public function store(Request $request, Product $product)
     {
-        // Validasi stok
+        $request->validate([
+            'quantity' => 'nullable|integer|min:1|max:' . $product->stok
+        ]);
+
         if ($product->stok < 1) {
             return response()->json([
                 'success' => false,
@@ -26,16 +34,18 @@ class CartController extends Controller
             ], 400);
         }
 
-        $cart = $this->getCart();
+        $cart = Auth::user()->cart()->firstOrCreate();
+        $quantity = $request->quantity ?? 1;
+
         $existingItem = $cart->items()->where('product_id', $product->id)->first();
 
         if ($existingItem) {
-            $newQuantity = $existingItem->quantity + ($request->quantity ?? 1);
+            $newQuantity = $existingItem->quantity + $quantity;
 
             if ($newQuantity > $product->stok) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Jumlah melebihi stok'
+                    'message' => 'Jumlah melebihi stok yang tersedia'
                 ], 400);
             }
 
@@ -43,20 +53,24 @@ class CartController extends Controller
         } else {
             $cart->items()->create([
                 'product_id' => $product->id,
-                'quantity' => $request->quantity ?? 1,
+                'quantity' => $quantity,
                 'price' => $product->harga
             ]);
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Ditambahkan ke keranjang',
-            'cartCount' => $cart->items()->sum('quantity')
+            'message' => 'Produk berhasil ditambahkan ke keranjang',
+            'cartCount' => $cart->refresh()->total_items
         ]);
     }
 
     public function update(Request $request, CartItem $item)
     {
+        if ($item->cart->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'quantity' => 'required|integer|min:1|max:' . $item->product->stok
         ]);
@@ -68,17 +82,12 @@ class CartController extends Controller
 
     public function destroy(CartItem $item)
     {
-        $item->delete();
-        return back()->with('success', 'Produk berhasil dihapus');
-    }
-
-    private function getCart()
-    {
-        $sessionId = session()->get('cart_session_id');
-        if (!$sessionId) {
-            $sessionId = Str::random(40);
-            session()->put('cart_session_id', $sessionId);
+        if ($item->cart->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
         }
-        return Cart::with(['items.product'])->firstOrCreate(['session_id' => $sessionId]);
+
+        $item->delete();
+
+        return back()->with('success', 'Produk berhasil dihapus dari keranjang');
     }
 }

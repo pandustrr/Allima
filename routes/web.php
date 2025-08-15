@@ -9,27 +9,36 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Public Routes (bisa diakses tanpa login)
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Produk
 Route::get('/produk/{product}', [ProductController::class, 'show'])->name('product.show');
-Route::post('/produk/{product}/tambah-keranjang', [CartController::class, 'store'])->name('cart.add');
 
-// Keranjang
-Route::prefix('keranjang')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    Route::put('/{item}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/{item}', [CartController::class, 'destroy'])->name('cart.remove');
+// Authentication Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Protected User Routes (harus login)
+Route::middleware('auth')->group(function () {
+    // Cart Routes
+    Route::post('/produk/{product}/tambah-keranjang', [CartController::class, 'store'])->name('cart.add');
+
+    Route::prefix('keranjang')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('cart.index');
+        Route::put('/{item}', [CartController::class, 'update'])->name('cart.update');
+        Route::delete('/{item}', [CartController::class, 'destroy'])->name('cart.remove');
+    });
+});
+
+// Admin Routes (tidak diubah)
 Route::prefix('admin')->group(function () {
     // Auth routes
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('login', [AdminAuthController::class, 'login']);
-    Route::post('logout', [AdminAuthController::class, 'logout'])->name('admin.logout'); // Tambahkan ini
+    Route::post('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
     // Dashboard dan route lainnya
     Route::middleware(['auth:admin'])->group(function () {

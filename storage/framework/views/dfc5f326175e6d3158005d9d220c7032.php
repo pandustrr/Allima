@@ -19,19 +19,15 @@
             <!-- Menu Kanan -->
             <div class="flex items-center space-x-4">
                 <!-- Keranjang -->
-                <a href="<?php echo e(route('cart.index')); ?>" class="p-1 rounded-full text-gray-600 hover:text-[#0ABAB5] relative">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                    <?php
-                        $cartCount = \App\Models\Cart::where('session_id', session('cart_session_id'))
-                            ->first()
-                            ?->items
-                            ->sum('quantity') ?? 0;
-                    ?>
-                    <span class="cart-count <?php echo e($cartCount == 0 ? 'hidden' : ''); ?> absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-[#0ABAB5] rounded-full">
-                        <?php echo e($cartCount); ?>
+                <?php if(auth()->guard()->check()): ?>
+                    <a href="<?php echo e(route('cart.index')); ?>" class="p-1 rounded-full text-gray-600 hover:text-[#0ABAB5] relative">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="cart-count <?php echo e(auth()->user()->cart_items_count == 0 ? 'hidden' : ''); ?> absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-[#0ABAB5] rounded-full">
+                            <?php echo e(auth()->user()->cart_items_count); ?>
 
-                    </span>
-                </a>
+                        </span>
+                    </a>
+                <?php endif; ?>
 
                 <!-- Login/Logout -->
                 <?php if(auth()->guard()->check()): ?>
@@ -66,9 +62,16 @@
             <a href="<?php echo e(route('home')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-[#0ABAB5] bg-[#ADEED9]">Beranda</a>
             <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Tentang Kami</a>
             <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Kontak</a>
-            <a href="<?php echo e(route('cart.index')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Keranjang</a>
 
             <?php if(auth()->guard()->check()): ?>
+                <a href="<?php echo e(route('cart.index')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">
+                    <i class="fas fa-shopping-cart mr-2"></i> Keranjang
+                    <span class="ml-1 bg-[#0ABAB5] text-white text-xs px-2 py-0.5 rounded-full">
+                        <?php echo e(auth()->user()->cart_items_count); ?>
+
+                    </span>
+                </a>
+
                 <div class="border-t border-gray-200 pt-2">
                     <div class="flex items-center px-3 py-2">
                         <span class="text-base font-medium text-gray-600">Halo, <?php echo e(Auth::user()->username); ?></span>

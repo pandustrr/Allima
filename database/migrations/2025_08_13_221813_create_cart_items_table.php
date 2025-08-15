@@ -13,10 +13,20 @@ return new class extends Migration
             $table->unsignedBigInteger('cart_id');
             $table->unsignedBigInteger('product_id');
             $table->integer('quantity')->default(1);
+            $table->decimal('price', 10, 2); // Harga saat item dimasukkan ke cart
             $table->timestamps();
 
-            $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('cart_id')
+                  ->references('id')
+                  ->on('carts')
+                  ->onDelete('cascade');
+
+            $table->foreign('product_id')
+                  ->references('id')
+                  ->on('products')
+                  ->onDelete('cascade');
+
+            $table->index(['cart_id', 'product_id']); // Tambahkan index untuk performa
         });
     }
 

@@ -51,13 +51,20 @@
 
                     <div class="p-3 md:p-4 pt-0">
                         @if($product->stok > 0)
-                            <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
-                                @csrf
-                                <button type="submit" class="w-full bg-[#0ABAB5] hover:bg-[#56DFCF] text-white text-center text-xs md:text-sm font-medium py-2 px-2 md:py-2 md:px-4 rounded transition duration-300 flex items-center justify-center">
-                                    <i class="fas fa-cart-plus mr-2"></i>
-                                    Tambah ke Keranjang
-                                </button>
-                            </form>
+                            @auth
+                                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="add-to-cart-form">
+                                    @csrf
+                                    <button type="submit" class="w-full bg-[#0ABAB5] hover:bg-[#56DFCF] text-white text-center text-xs md:text-sm font-medium py-2 px-2 md:py-2 md:px-4 rounded transition duration-300 flex items-center justify-center">
+                                        <i class="fas fa-cart-plus mr-2"></i>
+                                        Tambah ke Keranjang
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('login') }}" class="w-full bg-[#0ABAB5] hover:bg-[#56DFCF] text-white text-center text-xs md:text-sm font-medium py-2 px-2 md:py-2 md:px-4 rounded transition duration-300 flex items-center justify-center">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>
+                                    Login untuk Membeli
+                                </a>
+                            @endauth
                         @else
                             <button disabled class="w-full bg-gray-400 text-white text-center text-xs md:text-sm font-medium py-2 px-2 md:py-2 md:px-4 rounded cursor-not-allowed">
                                 Stok Habis
@@ -71,11 +78,11 @@
     </section>
 
     <div id="notification" class="fixed bottom-4 right-4 hidden">
-    <div class="bg-[#0ABAB5] text-white px-4 py-3 rounded-md shadow-lg flex items-center">
-        <i class="fas fa-check-circle mr-2"></i>
-        <span id="notification-message"></span>
+        <div class="bg-[#0ABAB5] text-white px-4 py-3 rounded-md shadow-lg flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="notification-message"></span>
+        </div>
     </div>
-</div>
 </div>
 
 <script>
