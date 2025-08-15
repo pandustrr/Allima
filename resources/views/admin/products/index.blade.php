@@ -2,10 +2,11 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 class="text-2xl font-bold text-gray-800">Daftar Produk</h1>
-        <a href="{{ route('admin.products.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-            Tambah Produk
+        <a href="{{ route('admin.products.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition flex items-center gap-2">
+            <i class="fas fa-plus"></i>
+            <span>Tambah Produk</span>
         </a>
     </div>
 
@@ -15,44 +16,64 @@
         </div>
     @endif
 
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="bg-white shadow rounded-lg overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cover</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penulis</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Cover</th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Judul</th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Penulis</th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Harga</th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Stok</th>
+                    <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($products as $product)
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <img src="{{ $product->foto_url }}" alt="{{ $product->judul }}" class="h-16 w-12 object-cover">
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-4">
+                        <div class="flex-shrink-0 h-16 w-12 overflow-hidden rounded">
+                            <img src="{{ $product->foto_url }}" alt="{{ $product->judul }}" class="h-full w-full object-cover">
+                        </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900">{{ $product->judul }}</div>
+                    <td class="px-4 py-4">
+                        <div class="text-sm font-medium text-gray-900 max-w-xs truncate">{{ $product->judul }}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-500">{{ $product->penulis }}</div>
+                    <td class="px-4 py-4">
+                        <div class="text-sm text-gray-500 max-w-xs truncate">{{ $product->penulis }}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-4 py-4">
                         <div class="text-sm text-gray-900">Rp {{ number_format($product->harga, 0, ',', '.') }}</div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ $product->stok }}</div>
+                    <td class="px-4 py-4">
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full
+                            {{ $product->stok > 5 ? 'bg-green-100 text-green-800' : ($product->stok > 0 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                            {{ $product->stok }}
+                        </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a href="{{ route('admin.products.edit', $product->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
-                        <a href="{{ route('admin.products.show', $product->id) }}" class="text-green-600 hover:text-green-900 mr-3">Lihat</a>
-                        <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">Hapus</button>
-                        </form>
+                    <td class="px-4 py-4">
+                        <div class="flex items-center gap-3">
+                            <a href="{{ route('admin.products.edit', $product->id) }}"
+                               class="text-blue-600 hover:text-blue-900"
+                               title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ route('admin.products.show', $product->id) }}"
+                               class="text-green-600 hover:text-green-900"
+                               title="Detail">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="text-red-600 hover:text-red-900"
+                                        title="Hapus"
+                                        onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty

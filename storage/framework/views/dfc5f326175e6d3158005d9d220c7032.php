@@ -33,6 +33,23 @@
                     </span>
                 </a>
 
+                <!-- Login/Logout -->
+                <?php if(auth()->guard()->check()): ?>
+                    <div class="hidden md:flex items-center space-x-2 ml-4">
+                        <span class="text-sm text-gray-600">Halo, <?php echo e(Auth::user()->username); ?></span>
+                        <form method="POST" action="<?php echo e(route('logout')); ?>">
+                            <?php echo csrf_field(); ?>
+                            <button type="submit" class="text-sm text-gray-600 hover:text-[#0ABAB5]">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
+                    </div>
+                <?php else: ?>
+                    <a href="<?php echo e(route('login')); ?>" class="hidden md:block text-sm text-gray-600 hover:text-[#0ABAB5] px-3 py-2">
+                        <i class="fas fa-sign-in-alt mr-1"></i> Masuk
+                    </a>
+                <?php endif; ?>
+
                 <!-- Tombol Menu Mobile -->
                 <div class="md:hidden ml-2">
                     <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9] focus:outline-none mobile-menu-button">
@@ -50,6 +67,24 @@
             <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Tentang Kami</a>
             <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Kontak</a>
             <a href="<?php echo e(route('cart.index')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Keranjang</a>
+
+            <?php if(auth()->guard()->check()): ?>
+                <div class="border-t border-gray-200 pt-2">
+                    <div class="flex items-center px-3 py-2">
+                        <span class="text-base font-medium text-gray-600">Halo, <?php echo e(Auth::user()->username); ?></span>
+                    </div>
+                    <form method="POST" action="<?php echo e(route('logout')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <button type="submit" class="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">
+                            <i class="fas fa-sign-out-alt mr-2"></i> Keluar
+                        </button>
+                    </form>
+                </div>
+            <?php else: ?>
+                <a href="<?php echo e(route('login')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Masuk
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
