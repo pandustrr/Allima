@@ -16,11 +16,11 @@ class DatabaseSeeder extends Seeder
     {
         Admin::create([
             'name' => 'Admin',
-            'email' => 'admin@example.com',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('password123'),
         ]);
 
-        // Jangan lupa jalankan ProductSeeder juga
         $this->call(ProductSeeder::class);
     }
 }
+

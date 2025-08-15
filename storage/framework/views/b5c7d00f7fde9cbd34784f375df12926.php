@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Admin - {{ config('app.name') }}</title>
+    <title>Admin - <?php echo e(config('app.name')); ?></title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,11 +22,11 @@
                 </div>
                 <div class="flex flex-col flex-grow px-4 py-4 overflow-y-auto">
                     <nav class="flex-1 space-y-2">
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-blue-700' : 'hover:bg-blue-700' }}">
+                        <a href="<?php echo e(route('admin.dashboard')); ?>" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg <?php echo e(request()->routeIs('admin.dashboard') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
                             <i class="fas fa-tachometer-alt mr-3"></i>
                             Dashboard
                         </a>
-                        <a href="{{ route('admin.products.index') }}" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg {{ request()->routeIs('admin.products.*') ? 'bg-blue-700' : 'hover:bg-blue-700' }}">
+                        <a href="<?php echo e(route('admin.products.index')); ?>" class="flex items-center px-4 py-2 text-sm font-medium rounded-lg <?php echo e(request()->routeIs('admin.products.*') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
                             <i class="fas fa-book mr-3"></i>
                             Manajemen Produk
                         </a>
@@ -34,8 +34,8 @@
                     </nav>
                 </div>
                 <div class="p-4 border-t border-blue-700">
-                    <form method="POST" action="{{ route('admin.logout') }}">
-                        @csrf
+                    <form method="POST" action="<?php echo e(route('admin.logout')); ?>">
+                        <?php echo csrf_field(); ?>
                         <button type="submit" class="flex items-center w-full px-4 py-2 text-sm font-medium text-left rounded-lg hover:bg-blue-700">
                             <i class="fas fa-sign-out-alt mr-3"></i>
                             Keluar
@@ -54,17 +54,17 @@
                         <button class="md:hidden text-gray-500 focus:outline-none sidebar-toggle">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <h1 class="text-xl font-semibold text-gray-800 ml-4">@yield('title', 'Dashboard')</h1>
+                        <h1 class="text-xl font-semibold text-gray-800 ml-4"><?php echo $__env->yieldContent('title', 'Dashboard'); ?></h1>
                     </div>
                     <div class="flex items-center">
-                        <span class="text-sm text-gray-600 mr-4">{{ Auth::guard('admin')->user()->email }}</span>
+                        <span class="text-sm text-gray-600 mr-4"><?php echo e(Auth::guard('admin')->user()->email); ?></span>
                     </div>
                 </div>
             </header>
 
             <!-- Konten -->
             <main class="flex-1 overflow-y-auto p-6">
-                @yield('content')
+                <?php echo $__env->yieldContent('content'); ?>
             </main>
         </div>
     </div>
@@ -81,19 +81,19 @@
             </div>
             <div class="flex-1 px-4 py-4 overflow-y-auto">
                 <nav class="space-y-2">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-blue-700' : 'hover:bg-blue-700' }}">
+                    <a href="<?php echo e(route('admin.dashboard')); ?>" class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg <?php echo e(request()->routeIs('admin.dashboard') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
                         <i class="fas fa-tachometer-alt mr-3"></i>
                         Dashboard
                     </a>
-                    <a href="{{ route('admin.products.index') }}" class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg {{ request()->routeIs('admin.products.*') ? 'bg-blue-700' : 'hover:bg-blue-700' }}">
+                    <a href="<?php echo e(route('admin.products.index')); ?>" class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg <?php echo e(request()->routeIs('admin.products.*') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
                         <i class="fas fa-book mr-3"></i>
                         Manajemen Produk
                     </a>
                 </nav>
             </div>
             <div class="p-4 border-t border-blue-700">
-                <form method="POST" action="{{ route('admin.logout') }}">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('admin.logout')); ?>">
+                    <?php echo csrf_field(); ?>
                     <button type="submit" class="flex items-center w-full px-4 py-2 text-sm font-medium text-left text-white rounded-lg hover:bg-blue-700">
                         <i class="fas fa-sign-out-alt mr-3"></i>
                         Keluar
@@ -115,3 +115,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH E:\Pandu-Projek\e-com\resources\views/admin/layouts/app.blade.php ENDPATH**/ ?>

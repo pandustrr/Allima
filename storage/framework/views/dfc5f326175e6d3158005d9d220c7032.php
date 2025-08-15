@@ -4,13 +4,13 @@
             <!-- Logo dan Menu Utama -->
             <div class="flex items-center">
                 <!-- Logo -->
-                <a href="{{ route('home') }}" class="flex items-center">
+                <a href="<?php echo e(route('home')); ?>" class="flex items-center">
                     <span class="text-xl font-bold text-[#0ABAB5]">Toko<span class="text-gray-800">Buku</span></span>
                 </a>
 
                 <!-- Menu Desktop -->
                 <div class="hidden md:ml-8 md:flex md:space-x-4">
-                    <a href="{{ route('home') }}" class="px-3 py-2 rounded-md text-sm font-medium text-[#0ABAB5] hover:bg-[#ADEED9]">Beranda</a>
+                    <a href="<?php echo e(route('home')); ?>" class="px-3 py-2 rounded-md text-sm font-medium text-[#0ABAB5] hover:bg-[#ADEED9]">Beranda</a>
                     <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Tentang Kami</a>
                     <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Kontak</a>
                 </div>
@@ -19,13 +19,14 @@
             <!-- Menu Kanan -->
             <div class="flex items-center space-x-4">
                 <!-- Keranjang -->
-                <a href="{{ route('cart.index') }}" class="p-1 rounded-full text-gray-600 hover:text-[#0ABAB5] relative">
+                <a href="<?php echo e(route('cart.index')); ?>" class="p-1 rounded-full text-gray-600 hover:text-[#0ABAB5] relative">
                     <i class="fas fa-shopping-cart text-xl"></i>
-                    @if($cartCount = \App\Models\Cart::where('session_id', session('cart_session_id'))->first()?->items->count())
+                    <?php if($cartCount = \App\Models\Cart::where('session_id', session('cart_session_id'))->first()?->items->count()): ?>
                         <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-[#0ABAB5] rounded-full">
-                            {{ $cartCount }}
+                            <?php echo e($cartCount); ?>
+
                         </span>
-                    @endif
+                    <?php endif; ?>
                 </a>
 
                 <!-- Tombol Menu Mobile -->
@@ -41,10 +42,11 @@
     <!-- Menu Mobile -->
     <div class="md:hidden hidden" id="mobile-menu">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
-            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-[#0ABAB5] bg-[#ADEED9]">Beranda</a>
+            <a href="<?php echo e(route('home')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-[#0ABAB5] bg-[#ADEED9]">Beranda</a>
             <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Tentang Kami</a>
             <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Kontak</a>
-            <a href="{{ route('cart.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Keranjang</a>
+            <a href="<?php echo e(route('cart.index')); ?>" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Keranjang</a>
         </div>
     </div>
 </nav>
+<?php /**PATH E:\Pandu-Projek\e-com\resources\views/layouts/navbar.blade.php ENDPATH**/ ?>

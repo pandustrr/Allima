@@ -7,41 +7,34 @@ use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        $products = [
-            [
-                'name' => 'Laptop Asus ROG',
-                'description' => 'Laptop gaming dengan performa tinggi',
-                'price' => 15000000,
-                'image' => 'https://via.placeholder.com/300',
-                'stock' => 10
-            ],
-            [
-                'name' => 'iPhone 15 Pro',
-                'description' => 'Smartphone flagship dari Apple',
-                'price' => 20000000,
-                'image' => 'https://via.placeholder.com/300',
-                'stock' => 15
-            ],
-            [
-                'name' => 'Samsung Galaxy S23',
-                'description' => 'Smartphone Android terbaru dari Samsung',
-                'price' => 12000000,
-                'image' => 'https://via.placeholder.com/300',
-                'stock' => 8
-            ],
-            [
-                'name' => 'Xiaomi Mi Band 7',
-                'description' => 'Smart band dengan fitur lengkap',
-                'price' => 500000,
-                'image' => 'https://via.placeholder.com/300',
-                'stock' => 20
-            ],
-        ];
+        Product::create([
+            'judul' => 'Sapiens: Riwayat Singkat Umat Manusia',
+            'penulis' => 'Yuval Noah Harari',
+            'deskripsi' => 'Buku yang mengisahkan sejarah manusia dari zaman batu hingga revolusi teknologi.',
+            'harga' => 125000,
+            'stok' => 50,
+            'halaman' => 525,
+            'bahasa' => 'Indonesia',
+            'panjang' => 20.3,
+            'lebar' => 13.5,
+            'berat' => 650,
+            'foto' => 'sapiens.jpg'
+        ]);
 
-        foreach ($products as $product) {
-            Product::create($product);
-        }
+        Product::create([
+            'judul' => 'Atomic Habits',
+            'penulis' => 'James Clear',
+            'deskripsi' => 'Buku tentang membangun kebiasaan baik dan menghilangkan kebiasaan buruk.',
+            'harga' => 98000,
+            'stok' => 30,
+            'halaman' => 320,
+            'bahasa' => 'Indonesia',
+            'panjang' => 19.0,
+            'lebar' => 12.8,
+            'berat' => 450,
+            'foto' => 'atomic-habits.jpg'
+        ]);
     }
 }

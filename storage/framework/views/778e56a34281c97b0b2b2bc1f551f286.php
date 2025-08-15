@@ -1,6 +1,4 @@
-@extends('admin.layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container mx-auto px-4 py-6">
     <h1 class="text-2xl font-bold text-gray-800 mb-6">Dashboard Admin</h1>
 
@@ -13,7 +11,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-500">Total Produk</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $totalProducts }}</p>
+                    <p class="text-2xl font-bold text-gray-800"><?php echo e($totalProducts); ?></p>
                 </div>
             </div>
         </div>
@@ -26,7 +24,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-500">Total Stok</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $totalStock }}</p>
+                    <p class="text-2xl font-bold text-gray-800"><?php echo e($totalStock); ?></p>
                 </div>
             </div>
         </div>
@@ -39,7 +37,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-500">Produk Habis</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $outOfStockProducts }}</p>
+                    <p class="text-2xl font-bold text-gray-800"><?php echo e($outOfStockProducts); ?></p>
                 </div>
             </div>
         </div>
@@ -52,7 +50,7 @@
                 </div>
                 <div>
                     <p class="text-sm font-medium text-gray-500">Nilai Inventaris</p>
-                    <p class="text-2xl font-bold text-gray-800">Rp {{ number_format($inventoryValue, 0, ',', '.') }}</p>
+                    <p class="text-2xl font-bold text-gray-800">Rp <?php echo e(number_format($inventoryValue, 0, ',', '.')); ?></p>
                 </div>
             </div>
         </div>
@@ -64,30 +62,31 @@
             <h2 class="text-lg font-semibold text-gray-800">Produk Terbaru</h2>
         </div>
         <div class="divide-y divide-gray-200">
-            @forelse($recentProducts as $product)
+            <?php $__empty_1 = true; $__currentLoopData = $recentProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <div class="p-6 hover:bg-gray-50">
                 <div class="flex items-start">
-                    <img src="{{ $product->foto_url }}" alt="{{ $product->judul }}" class="h-16 w-12 object-cover rounded mr-4">
+                    <img src="<?php echo e($product->foto_url); ?>" alt="<?php echo e($product->judul); ?>" class="h-16 w-12 object-cover rounded mr-4">
                     <div class="flex-1">
-                        <h3 class="text-lg font-medium text-gray-800">{{ $product->judul }}</h3>
-                        <p class="text-sm text-gray-600">Oleh: {{ $product->penulis }}</p>
+                        <h3 class="text-lg font-medium text-gray-800"><?php echo e($product->judul); ?></h3>
+                        <p class="text-sm text-gray-600">Oleh: <?php echo e($product->penulis); ?></p>
                         <div class="mt-2 flex items-center justify-between">
-                            <span class="text-sm font-medium text-blue-600">Rp {{ number_format($product->harga, 0, ',', '.') }}</span>
-                            <span class="text-sm {{ $product->stok > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                Stok: {{ $product->stok }}
+                            <span class="text-sm font-medium text-blue-600">Rp <?php echo e(number_format($product->harga, 0, ',', '.')); ?></span>
+                            <span class="text-sm <?php echo e($product->stok > 0 ? 'text-green-600' : 'text-red-600'); ?>">
+                                Stok: <?php echo e($product->stok); ?>
+
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="p-6 text-center text-gray-500">
                 Tidak ada produk terbaru.
             </div>
-            @endforelse
+            <?php endif; ?>
         </div>
         <div class="px-6 py-4 border-t border-gray-200 text-right">
-            <a href="{{ route('admin.products.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+            <a href="<?php echo e(route('admin.products.index')); ?>" class="text-sm font-medium text-blue-600 hover:text-blue-800">
                 Lihat Semua Produk →
             </a>
         </div>
@@ -99,33 +98,36 @@
             <h2 class="text-lg font-semibold text-gray-800">Produk dengan Stok Sedikit</h2>
         </div>
         <div class="divide-y divide-gray-200">
-            @forelse($lowStockProducts as $product)
+            <?php $__empty_1 = true; $__currentLoopData = $lowStockProducts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
             <div class="p-6 hover:bg-gray-50">
                 <div class="flex items-start">
-                    <img src="{{ $product->foto_url }}" alt="{{ $product->judul }}" class="h-16 w-12 object-cover rounded mr-4">
+                    <img src="<?php echo e($product->foto_url); ?>" alt="<?php echo e($product->judul); ?>" class="h-16 w-12 object-cover rounded mr-4">
                     <div class="flex-1">
-                        <h3 class="text-lg font-medium text-gray-800">{{ $product->judul }}</h3>
-                        <p class="text-sm text-gray-600">Oleh: {{ $product->penulis }}</p>
+                        <h3 class="text-lg font-medium text-gray-800"><?php echo e($product->judul); ?></h3>
+                        <p class="text-sm text-gray-600">Oleh: <?php echo e($product->penulis); ?></p>
                         <div class="mt-2 flex items-center justify-between">
-                            <span class="text-sm font-medium text-blue-600">Rp {{ number_format($product->harga, 0, ',', '.') }}</span>
+                            <span class="text-sm font-medium text-blue-600">Rp <?php echo e(number_format($product->harga, 0, ',', '.')); ?></span>
                             <span class="text-sm text-red-600">
-                                Stok: {{ $product->stok }}
+                                Stok: <?php echo e($product->stok); ?>
+
                             </span>
                         </div>
                     </div>
                 </div>
             </div>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="p-6 text-center text-gray-500">
                 Tidak ada produk dengan stok sedikit.
             </div>
-            @endforelse
+            <?php endif; ?>
         </div>
         <div class="px-6 py-4 border-t border-gray-200 text-right">
-            <a href="{{ route('admin.products.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">
+            <a href="<?php echo e(route('admin.products.index')); ?>" class="text-sm font-medium text-blue-600 hover:text-blue-800">
                 Lihat Semua Produk →
             </a>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH E:\Pandu-Projek\e-com\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>
