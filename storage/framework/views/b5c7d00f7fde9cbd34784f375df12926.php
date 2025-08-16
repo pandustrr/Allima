@@ -20,7 +20,7 @@
         <div class="hidden md:flex md:flex-shrink-0">
             <div class="flex flex-col w-64 bg-blue-800 text-white">
                 <div class="flex items-center justify-center h-16 px-4 bg-blue-900">
-                    <span class="text-xl font-bold">Admin Panel</span>
+                    <span class="text-xl font-bold"><?php echo e(config('app.name')); ?></span>
                 </div>
                 <div class="flex flex-col flex-grow px-4 py-4 overflow-y-auto">
                     <nav class="flex-1 space-y-2">
@@ -28,6 +28,11 @@
                             class="flex items-center px-4 py-2 text-sm font-medium rounded-lg <?php echo e(request()->routeIs('admin.dashboard') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
                             <i class="fas fa-tachometer-alt mr-3"></i>
                             Dashboard
+                        </a>
+                        <a href="<?php echo e(route('admin.sales.index')); ?>"
+                            class="flex items-center px-4 py-2 text-sm font-medium rounded-lg <?php echo e(request()->routeIs('admin.sales.*') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
+                            <i class="fas fa-shopping-cart mr-3"></i>
+                            Manajemen Penjualan
                         </a>
                         <a href="<?php echo e(route('admin.products.index')); ?>"
                             class="flex items-center px-4 py-2 text-sm font-medium rounded-lg <?php echo e(request()->routeIs('admin.products.*') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
@@ -66,10 +71,29 @@
                         <h1 class="text-xl font-semibold text-gray-800 ml-4"><?php echo $__env->yieldContent('title', 'Dashboard'); ?></h1>
                     </div>
                     <div class="flex items-center">
-                        <span class="text-sm text-gray-600 mr-4"><?php echo e(Auth::guard('admin')->user()->email); ?></span>
+                        <span class="text-sm text-gray-600 mr-4"><?php echo e(Auth::guard('admin')->user()->username); ?></span>
                     </div>
                 </div>
             </header>
+
+            <!-- Notifikasi -->
+            <?php if(session('success')): ?>
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mx-6 mt-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <p><?php echo e(session('success')); ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <?php if(session('error')): ?>
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-6 mt-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <p><?php echo e(session('error')); ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <!-- Konten -->
             <main class="flex-1 overflow-y-auto p-6">
@@ -83,7 +107,7 @@
         <div class="fixed inset-0 bg-gray-600 bg-opacity-75" aria-hidden="true"></div>
         <div class="relative flex flex-col w-72 max-w-xs h-full bg-blue-800">
             <div class="flex items-center justify-center h-16 px-4 bg-blue-900">
-                <span class="text-xl font-bold text-white">Admin Panel</span>
+                <span class="text-xl font-bold text-white"><?php echo e(config('app.name')); ?></span>
                 <button type="button" class="ml-auto p-2 rounded-md text-white focus:outline-none sidebar-close">
                     <i class="fas fa-times"></i>
                 </button>
@@ -95,10 +119,20 @@
                         <i class="fas fa-tachometer-alt mr-3"></i>
                         Dashboard
                     </a>
+                    <a href="<?php echo e(route('admin.sales.index')); ?>"
+                        class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg <?php echo e(request()->routeIs('admin.sales.*') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
+                        <i class="fas fa-shopping-cart mr-3"></i>
+                        Penjualan
+                    </a>
                     <a href="<?php echo e(route('admin.products.index')); ?>"
                         class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg <?php echo e(request()->routeIs('admin.products.*') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
                         <i class="fas fa-book mr-3"></i>
-                        Manajemen Produk
+                        Produk
+                    </a>
+                    <a href="<?php echo e(route('admin.users.index')); ?>"
+                        class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg <?php echo e(request()->routeIs('admin.users.*') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
+                        <i class="fas fa-users mr-3"></i>
+                        User
                     </a>
                 </nav>
             </div>
@@ -115,16 +149,6 @@
         </div>
     </div>
 
-    <script>
-        // Toggle mobile sidebar
-        document.querySelector('.sidebar-toggle').addEventListener('click', function() {
-            document.getElementById('mobile-sidebar').classList.remove('hidden');
-        });
-
-        document.querySelector('.sidebar-close').addEventListener('click', function() {
-            document.getElementById('mobile-sidebar').classList.add('hidden');
-        });
-    </script>
 </body>
 
 </html>

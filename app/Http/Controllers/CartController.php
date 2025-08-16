@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -96,51 +98,76 @@ class CartController extends Controller
         return back()->with('success', 'Produk berhasil dihapus dari keranjang');
     }
 
-    public function confirm(Request $request)
-    {
-        return DB::transaction(function () use ($request) {
-            $cart = Auth::user()->cart()->with(['items.product' => function($q) {
-                $q->lockForUpdate();
-            }])->first();
+public function confirm(Request $request)
+{
+    return DB::transaction(function () use ($request) {
+        $cart = Auth::user()->cart()->with(['items.product' => function($q) {
+            $q->lockForUpdate();
+        }])->first();
 
-            if (!$cart || $cart->items->isEmpty()) {
+        if (!$cart || $cart->items->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Keranjang belanja kosong'
+            ], 400);
+        }
+
+        $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'pgtpq' => 'required|string|max:255',
+            'address' => 'required|string',
+            'notes' => 'nullable|string'
+        ]);
+
+        // Hitung total amount
+        $totalAmount = $cart->items->sum(function($item) {
+            return $item->price * $item->quantity;
+        });
+
+        // Validasi stok sebelum checkout
+        foreach ($cart->items as $item) {
+            if ($item->quantity > $item->product->stok) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Keranjang belanja kosong'
+                    'message' => 'Stok tidak mencukupi untuk produk: ' . $item->product->judul
                 ], 400);
             }
+        }
 
-            $request->validate([
-                'customer_name' => 'required|string|max:255',
-                'pgtpq' => 'required|string|max:255',
-                'address' => 'required|string',
-                'notes' => 'nullable|string'
+        // Buat order baru
+        $order = Order::create([
+            'order_number' => Order::generateOrderNumber(),
+            'user_id' => Auth::id(),
+            'customer_name' => $request->customer_name,
+            'pgtpq' => $request->pgtpq,
+            'address' => $request->address,
+            'notes' => $request->notes ?? '-',
+            'total_amount' => $totalAmount, 
+            'status' => 'menunggu'
+        ]);
+
+        // Tambahkan item ke order
+        foreach ($cart->items as $item) {
+            $order->items()->create([
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'price' => $item->price
             ]);
-
-            // Validasi stok sebelum checkout
-            foreach ($cart->items as $item) {
-                if ($item->quantity > $item->product->stok) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Stok tidak mencukupi untuk produk: ' . $item->product->judul
-                    ], 400);
-                }
-            }
 
             // Kurangi stok
-            foreach ($cart->items as $item) {
-                $item->product->decrement('stok', $item->quantity);
-            }
+            $item->product->decrement('stok', $item->quantity);
+        }
 
-            // Kosongkan keranjang
-            $cart->items()->delete();
+        // Kosongkan keranjang
+        $cart->items()->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pesanan berhasil dikonfirmasi'
-            ]);
-        });
-    }
+        return response()->json([
+            'success' => true,
+            'message' => 'Pesanan berhasil dikonfirmasi',
+            'order_number' => $order->order_number
+        ]);
+    });
+}
 
     public function thankYou()
     {

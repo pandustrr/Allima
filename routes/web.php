@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\SalesController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\UserController;
@@ -34,10 +35,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/keranjang/konfirmasi', [CartController::class, 'confirm'])->name('cart.confirm');
     Route::get('/terima-kasih', [CartController::class, 'thankYou'])->name('cart.thankyou');
-
 });
 
-// Admin Routes (tidak diubah)
+// Admin Routes
 Route::prefix('admin')->group(function () {
     // Auth routes
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
@@ -59,6 +59,7 @@ Route::prefix('admin')->group(function () {
             'destroy' => 'admin.products.destroy',
         ]);
 
+        // User Management
         Route::resource('users', UserController::class)->names([
             'index' => 'admin.users.index',
             'create' => 'admin.users.create',
@@ -67,5 +68,13 @@ Route::prefix('admin')->group(function () {
             'update' => 'admin.users.update',
             'destroy' => 'admin.users.destroy',
         ])->except(['show']);
+
+        // Sales Management
+        Route::prefix('sales')->group(function () {
+            Route::get('/', [SalesController::class, 'index'])->name('admin.sales.index');
+            Route::get('/{order}', [SalesController::class, 'show'])->name('admin.sales.show');
+            Route::delete('/sales/{order}', [SalesController::class, 'destroy'])->name('admin.sales.destroy');
+            Route::post('/{order}/update-status', [SalesController::class, 'updateStatus'])->name('admin.sales.update-status');
+        });
     });
 });
