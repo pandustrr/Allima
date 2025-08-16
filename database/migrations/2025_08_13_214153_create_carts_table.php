@@ -19,24 +19,24 @@ class CreateCartsTable extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::create('cart_items', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('cart_id');
-            $table->unsignedBigInteger('product_id');
-            $table->integer('quantity')->default(1);
-            $table->decimal('price', 10, 2); // Tambahkan kolom price
-            $table->timestamps();
+        // Schema::create('cart_items', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('cart_id');
+        //     $table->unsignedBigInteger('product_id');
+        //     $table->integer('quantity')->default(1);
+        //     $table->decimal('price', 10, 2); // Tambahkan kolom price
+        //     $table->timestamps();
 
-            $table->foreign('cart_id')
-                ->references('id')
-                ->on('carts')
-                ->onDelete('cascade');
+        //     $table->foreign('cart_id')
+        //         ->references('id')
+        //         ->on('carts')
+        //         ->onDelete('cascade');
 
-            $table->foreign('product_id')
-                ->references('id')
-                ->on('products')
-                ->onDelete('cascade');
-        });
+        //     $table->foreign('product_id')
+        //         ->references('id')
+        //         ->on('products')
+        //         ->onDelete('cascade');
+        // });
     }
 
     public function down(): void
