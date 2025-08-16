@@ -40,6 +40,9 @@
                                             <h3 class="text-lg font-medium text-gray-900">{{ $item->product->judul }}
                                             </h3>
                                             <p class="text-sm text-gray-600">Oleh: {{ $item->product->penulis }}</p>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                Stok Tersedia: {{ $item->product->stok }}
+                                            </p>
                                         </div>
                                         <div class="text-right">
                                             <p class="text-lg font-medium text-[#0ABAB5]">
@@ -175,41 +178,69 @@
         whatsappBtn.addEventListener('click', function(e) {
             e.preventDefault();
 
-            // Ambil data form
-            const name = document.getElementById('customer_name').value || '[Belum diisi]';
-            const pgtpq = document.getElementById('pgtpq').value || '[Belum diisi]';
-            const address = document.getElementById('address').value || '[Belum diisi]';
-            const notes = document.getElementById('notes').value || '-';
+            // Validasi form
+            const name = document.getElementById('customer_name').value;
+            const pgtpq = document.getElementById('pgtpq').value;
+            const address = document.getElementById('address').value;
 
-            // Buat pesan
-            let message = `*PEMESANAN BUKU*\n\n`;
+            if (!name || !pgtpq || !address) {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+                return;
+            }
 
-            // Data Pemesan
-            message += `*DATA PEMESAN*\n`;
-            message += `Nama Lengkap : ${name}\n`;
-            message += `PGTPQ        : ${pgtpq}\n`;
-            message += `Alamat       : ${address}\n`;
-            message += `Catatan      : ${notes}\n\n`;
+            // Kirim request ke server untuk konfirmasi pesanan
+            fetch('{{ route("cart.confirm") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    customer_name: name,
+                    pgtpq: pgtpq,
+                    address: address,
+                    notes: document.getElementById('notes').value || '-'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Buat pesan WhatsApp
+                    let message = `*PEMESANAN BUKU*\n\n`;
+                    message += `*DATA PEMESAN*\n`;
+                    message += `Nama Lengkap : ${name}\n`;
+                    message += `PGTPQ        : ${pgtpq}\n`;
+                    message += `Alamat       : ${address}\n`;
+                    message += `Catatan      : ${document.getElementById('notes').value || '-'}\n\n`;
+                    message += `*DETAIL PESANAN*\n`;
 
-            // Detail Pesanan
-            message += `*DETAIL PESANAN*\n`;
-            @foreach ($cart->items as $item)
-                message += `--------------------------------\n`;
-                message += `*Judul Buku*  : {!! $item->product->judul !!}\n`;
-                message += `Harga Satuan  : Rp {!! number_format($item->product->harga, 0, ',', '.') !!}\n`;
-                message += `Jumlah        : {!! $item->quantity !!} buku\n`;
-                message += `Subtotal      : Rp {!! number_format($item->subtotal, 0, ',', '.') !!}\n`;
-            @endforeach
+                    @foreach ($cart->items as $item)
+                        message += `--------------------------------\n`;
+                        message += `*Judul Buku*  : {!! $item->product->judul !!}\n`;
+                        message += `Harga Satuan  : Rp {!! number_format($item->product->harga, 0, ',', '.') !!}\n`;
+                        message += `Jumlah        : {!! $item->quantity !!} buku\n`;
+                        message += `Subtotal      : Rp {!! number_format($item->subtotal, 0, ',', '.') !!}\n`;
+                    @endforeach
 
-            // Total
-            message += `\n*TOTAL PEMBAYARAN*: Rp {!! number_format($cart->total, 0, ',', '.') !!}\n\n`;
-            message +=
-                `Mohon konfirmasi ketersediaan buku dan informasi total pembayaran termasuk ongkos kirim.\n`;
-            message += `Terima kasih 🙏`;
+                    message += `\n*TOTAL PEMBAYARAN*: Rp {!! number_format($cart->total, 0, ',', '.') !!}\n\n`;
+                    message += `Mohon konfirmasi ketersediaan buku dan informasi total pembayaran termasuk ongkos kirim.\n`;
+                    message += `Terima kasih 🙏`;
 
-            // Kirim ke WhatsApp
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/62895352729214?text=${encodedMessage}`, '_blank');
+                    // Buka WhatsApp
+                    const encodedMessage = encodeURIComponent(message);
+                    window.open(`https://wa.me/62895352729214?text=${encodedMessage}`, '_blank');
+
+                    // Redirect ke halaman terima kasih
+                    window.location.href = '{{ route("cart.thankyou") }}';
+                } else {
+                    alert('Gagal memproses pesanan: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memproses pesanan');
+            });
         });
     });
 </script>

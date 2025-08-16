@@ -32,9 +32,9 @@
                                 Rp <?php echo e(number_format($product->harga, 0, ',', '.')); ?>
 
                             </span>
-                            <?php if($product->stok > 0): ?>
+                            <?php if($product->available_stock > 0): ?>
                                 <span class="ml-4 px-2 py-1 text-xs font-medium rounded-full bg-[#ADEED9] text-green-800">
-                                    Stok Tersedia (<?php echo e($product->stok); ?>)
+                                    Stok Tersedia (<?php echo e($product->available_stock); ?>)
                                 </span>
                             <?php else: ?>
                                 <span class="ml-4 px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
@@ -44,13 +44,14 @@
                         </div>
 
                         <!-- Form Tambah ke Keranjang -->
-                        <?php if($product->stok > 0): ?>
+                        <?php if($product->available_stock > 0): ?>
                         <form action="<?php echo e(route('cart.add', $product)); ?>" method="POST" class="mt-6 add-to-cart-form">
                             <?php echo csrf_field(); ?>
                             <div class="flex items-center space-x-4">
                                 <div class="w-24">
                                     <label for="quantity" class="sr-only">Jumlah</label>
-                                    <input type="number" id="quantity" name="quantity" min="1" max="<?php echo e($product->stok); ?>"
+                                    <input type="number" id="quantity" name="quantity"
+                                           min="1" max="<?php echo e($product->available_stock); ?>"
                                            value="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm">
                                 </div>
                                 <button type="submit"
@@ -60,6 +61,12 @@
                                 </button>
                             </div>
                         </form>
+                        <?php else: ?>
+                        <div class="mt-6">
+                            <button disabled class="w-full bg-gray-400 text-white px-6 py-3 rounded-md font-medium cursor-not-allowed">
+                                Stok Habis
+                            </button>
+                        </div>
                         <?php endif; ?>
 
                         <!-- Deskripsi -->
@@ -168,6 +175,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         el.classList.remove('hidden');
                     });
 
+                    // Update tampilan stok
+                    const stockElement = document.querySelector('.ml-4.px-2.py-1.text-xs.font-medium.rounded-full');
+                    if (stockElement) {
+                        const currentStock = parseInt(stockElement.textContent.match(/\d+/)[0]);
+                        const newStock = currentStock - quantity;
+
+                        if (newStock > 0) {
+                            stockElement.textContent = `Stok Tersedia (${newStock})`;
+                            // Update max quantity
+                            form.querySelector('input[name="quantity"]').max = newStock;
+                        } else {
+                            stockElement.classList.remove('bg-[#ADEED9]', 'text-green-800');
+                            stockElement.classList.add('bg-red-100', 'text-red-800');
+                            stockElement.textContent = 'Stok Habis';
+
+                            // Nonaktifkan form
+                            button.disabled = true;
+                            button.classList.remove('bg-[#0ABAB5]', 'hover:bg-[#56DFCF]');
+                            button.classList.add('bg-gray-400', 'cursor-not-allowed');
+                            button.innerHTML = '<i class="fas fa-ban mr-2"></i>Stok Habis';
+                        }
+                    }
+
                     // Tampilkan notifikasi
                     showNotification(data.message);
                 } else {
@@ -177,8 +207,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error:', error);
                 showNotification('Terjadi kesalahan', true);
             } finally {
-                button.disabled = false;
-                button.innerHTML = originalText;
+                if (!button.disabled) {
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
             }
         });
     });

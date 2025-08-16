@@ -31,6 +31,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/{item}', [CartController::class, 'update'])->name('cart.update');
         Route::delete('/{item}', [CartController::class, 'destroy'])->name('cart.remove');
     });
+
+    Route::post('/keranjang/konfirmasi', [CartController::class, 'confirm'])->name('cart.confirm');
+    Route::get('/terima-kasih', [CartController::class, 'thankYou'])->name('cart.thankyou');
+
 });
 
 // Admin Routes (tidak diubah)

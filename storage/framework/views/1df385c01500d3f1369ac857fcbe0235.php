@@ -39,6 +39,10 @@
 
                                             </h3>
                                             <p class="text-sm text-gray-600">Oleh: <?php echo e($item->product->penulis); ?></p>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                Stok Tersedia: <?php echo e($item->product->stok); ?>
+
+                                            </p>
                                         </div>
                                         <div class="text-right">
                                             <p class="text-lg font-medium text-[#0ABAB5]">
@@ -179,41 +183,69 @@
         whatsappBtn.addEventListener('click', function(e) {
             e.preventDefault();
 
-            // Ambil data form
-            const name = document.getElementById('customer_name').value || '[Belum diisi]';
-            const pgtpq = document.getElementById('pgtpq').value || '[Belum diisi]';
-            const address = document.getElementById('address').value || '[Belum diisi]';
-            const notes = document.getElementById('notes').value || '-';
+            // Validasi form
+            const name = document.getElementById('customer_name').value;
+            const pgtpq = document.getElementById('pgtpq').value;
+            const address = document.getElementById('address').value;
 
-            // Buat pesan
-            let message = `*PEMESANAN BUKU*\n\n`;
+            if (!name || !pgtpq || !address) {
+                alert('Harap lengkapi semua field yang wajib diisi!');
+                return;
+            }
 
-            // Data Pemesan
-            message += `*DATA PEMESAN*\n`;
-            message += `Nama Lengkap : ${name}\n`;
-            message += `PGTPQ        : ${pgtpq}\n`;
-            message += `Alamat       : ${address}\n`;
-            message += `Catatan      : ${notes}\n\n`;
+            // Kirim request ke server untuk konfirmasi pesanan
+            fetch('<?php echo e(route("cart.confirm")); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+                },
+                body: JSON.stringify({
+                    customer_name: name,
+                    pgtpq: pgtpq,
+                    address: address,
+                    notes: document.getElementById('notes').value || '-'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Buat pesan WhatsApp
+                    let message = `*PEMESANAN BUKU*\n\n`;
+                    message += `*DATA PEMESAN*\n`;
+                    message += `Nama Lengkap : ${name}\n`;
+                    message += `PGTPQ        : ${pgtpq}\n`;
+                    message += `Alamat       : ${address}\n`;
+                    message += `Catatan      : ${document.getElementById('notes').value || '-'}\n\n`;
+                    message += `*DETAIL PESANAN*\n`;
 
-            // Detail Pesanan
-            message += `*DETAIL PESANAN*\n`;
-            <?php $__currentLoopData = $cart->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                message += `--------------------------------\n`;
-                message += `*Judul Buku*  : <?php echo $item->product->judul; ?>\n`;
-                message += `Harga Satuan  : Rp <?php echo number_format($item->product->harga, 0, ',', '.'); ?>\n`;
-                message += `Jumlah        : <?php echo $item->quantity; ?> buku\n`;
-                message += `Subtotal      : Rp <?php echo number_format($item->subtotal, 0, ',', '.'); ?>\n`;
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $cart->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        message += `--------------------------------\n`;
+                        message += `*Judul Buku*  : <?php echo $item->product->judul; ?>\n`;
+                        message += `Harga Satuan  : Rp <?php echo number_format($item->product->harga, 0, ',', '.'); ?>\n`;
+                        message += `Jumlah        : <?php echo $item->quantity; ?> buku\n`;
+                        message += `Subtotal      : Rp <?php echo number_format($item->subtotal, 0, ',', '.'); ?>\n`;
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-            // Total
-            message += `\n*TOTAL PEMBAYARAN*: Rp <?php echo number_format($cart->total, 0, ',', '.'); ?>\n\n`;
-            message +=
-                `Mohon konfirmasi ketersediaan buku dan informasi total pembayaran termasuk ongkos kirim.\n`;
-            message += `Terima kasih 🙏`;
+                    message += `\n*TOTAL PEMBAYARAN*: Rp <?php echo number_format($cart->total, 0, ',', '.'); ?>\n\n`;
+                    message += `Mohon konfirmasi ketersediaan buku dan informasi total pembayaran termasuk ongkos kirim.\n`;
+                    message += `Terima kasih 🙏`;
 
-            // Kirim ke WhatsApp
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/62895352729214?text=${encodedMessage}`, '_blank');
+                    // Buka WhatsApp
+                    const encodedMessage = encodeURIComponent(message);
+                    window.open(`https://wa.me/62895352729214?text=${encodedMessage}`, '_blank');
+
+                    // Redirect ke halaman terima kasih
+                    window.location.href = '<?php echo e(route("cart.thankyou")); ?>';
+                } else {
+                    alert('Gagal memproses pesanan: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memproses pesanan');
+            });
         });
     });
 </script>

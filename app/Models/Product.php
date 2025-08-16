@@ -15,9 +15,9 @@ class Product extends Model
         'deskripsi',
         'harga',
         'stok',
+        'reserved_stock', // Kolom baru untuk stok yang dipesan
         'foto',
         'halaman',
-        // 'bahasa',
         'panjang',
         'lebar',
         'berat'
@@ -29,7 +29,7 @@ class Product extends Model
         'deskripsi' => '-',
         'harga' => 0,
         'stok' => 0,
-        // 'bahasa' => 'Indonesia',
+        'reserved_stock' => 0, // Default value
         'halaman' => null,
         'panjang' => null,
         'lebar' => null,
@@ -41,5 +41,10 @@ class Product extends Model
     public function getFotoUrlAttribute()
     {
         return $this->foto ? asset('storage/' . $this->foto) : asset('images/default-book.png');
+    }
+
+    public function getAvailableStockAttribute()
+    {
+        return $this->stok; 
     }
 }

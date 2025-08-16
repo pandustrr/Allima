@@ -49,7 +49,7 @@
                     <i class="fas fa-money-bill-wave text-xl"></i>
                 </div>
                 <div>
-                    <p class="text-sm font-medium text-gray-500">Nilai Inventaris</p>
+                    <p class="text-sm font-medium text-gray-500">Nilai Penjualan</p>
                     <p class="text-2xl font-bold text-gray-800">Rp <?php echo e(number_format($inventoryValue, 0, ',', '.')); ?></p>
                 </div>
             </div>
