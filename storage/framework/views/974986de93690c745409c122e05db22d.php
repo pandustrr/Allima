@@ -35,19 +35,19 @@
                     <td class="py-2 px-4 border-b border-gray-200"><?php echo e($loop->iteration + ($users->perPage() * ($users->currentPage() - 1))); ?></td>
                     <td class="py-2 px-4 border-b border-gray-200"><?php echo e($user->username); ?></td>
                     <td class="py-2 px-4 border-b border-gray-200 font-mono">
-                        <?php if($user->tempPassword): ?>
+                        <?php if($user->temp_password): ?>
                             <div class="flex items-center">
                                 <span class="password-field" id="password-<?php echo e($user->id); ?>">••••••••</span>
                                 <button
                                     type="button"
-                                    onclick="togglePassword('<?php echo e($user->id); ?>', '<?php echo e($user->tempPassword); ?>')"
+                                    onclick="togglePassword('<?php echo e($user->id); ?>', '<?php echo e($user->temp_password); ?>')"
                                     class="ml-2 text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300"
                                 >
                                     Tampilkan
                                 </button>
                                 <button
                                     type="button"
-                                    onclick="copyToClipboard('<?php echo e($user->tempPassword); ?>')"
+                                    onclick="copyToClipboard('<?php echo e($user->temp_password); ?>')"
                                     class="ml-1 text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200"
                                     title="Salin password"
                                 >

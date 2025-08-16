@@ -36,19 +36,19 @@
                     <td class="py-2 px-4 border-b border-gray-200">{{ $loop->iteration + ($users->perPage() * ($users->currentPage() - 1)) }}</td>
                     <td class="py-2 px-4 border-b border-gray-200">{{ $user->username }}</td>
                     <td class="py-2 px-4 border-b border-gray-200 font-mono">
-                        @if($user->tempPassword)
+                        @if($user->temp_password)
                             <div class="flex items-center">
                                 <span class="password-field" id="password-{{ $user->id }}">••••••••</span>
                                 <button
                                     type="button"
-                                    onclick="togglePassword('{{ $user->id }}', '{{ $user->tempPassword }}')"
+                                    onclick="togglePassword('{{ $user->id }}', '{{ $user->temp_password }}')"
                                     class="ml-2 text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded hover:bg-gray-300"
                                 >
                                     Tampilkan
                                 </button>
                                 <button
                                     type="button"
-                                    onclick="copyToClipboard('{{ $user->tempPassword }}')"
+                                    onclick="copyToClipboard('{{ $user->temp_password }}')"
                                     class="ml-1 text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200"
                                     title="Salin password"
                                 >

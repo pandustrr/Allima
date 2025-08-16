@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,20 +12,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::latest()->paginate(10);
-
-        // Tambahkan password sementara untuk setiap user
-        $users->getCollection()->transform(function ($user) {
-            $user->tempPassword = $this->getTemporaryPassword($user);
-            return $user;
-        });
-
         return view('admin.users.index', compact('users'));
-    }
-
-    private function getTemporaryPassword(User $user)
-    {
-        // Ambil dari session atau return null jika tidak ada
-        return session('user_'.$user->id.'_password');
     }
 
     public function create()
@@ -41,37 +27,29 @@ class UserController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Simpan password asli ke session sebelum di-hash
-        session(['user_new_password' => $request->password]);
-
         $user = User::create([
             'username' => $request->username,
             'password' => Hash::make($request->password),
+            'temp_password' => $request->password // Simpan password asli
         ]);
-
-        // Pindahkan ke session user yang baru dibuat
-        session(['user_'.$user->id.'_password' => session('user_new_password')]);
-        session()->forget('user_new_password');
 
         return redirect()
             ->route('admin.users.index')
             ->with([
                 'success' => 'User berhasil ditambahkan!',
+                'new_password' => $request->password // Untuk ditampilkan sekali
             ]);
     }
 
     public function edit(User $user)
     {
-        return view('admin.users.edit', [
-            'user' => $user,
-            'tempPassword' => session('user_'.$user->id.'_password')
-        ]);
+        return view('admin.users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'username' => 'required|string|max:255|unique:users,username,'.$user->id,
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
         ]);
 
@@ -79,7 +57,7 @@ class UserController extends Controller
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
-            session(['user_'.$user->id.'_password' => $request->password]);
+            $data['temp_password'] = $request->password; // Update temp_password
         }
 
         $user->update($data);
@@ -90,9 +68,6 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        // Hapus session password saat user dihapus
-        session()->forget('user_'.$user->id.'_password');
-
         $user->delete();
         return redirect()
             ->route('admin.users.index')

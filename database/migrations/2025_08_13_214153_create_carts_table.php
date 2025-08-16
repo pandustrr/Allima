@@ -14,9 +14,9 @@ class CreateCartsTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
 
         Schema::create('cart_items', function (Blueprint $table) {
@@ -28,14 +28,14 @@ class CreateCartsTable extends Migration
             $table->timestamps();
 
             $table->foreign('cart_id')
-                  ->references('id')
-                  ->on('carts')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('carts')
+                ->onDelete('cascade');
 
             $table->foreign('product_id')
-                  ->references('id')
-                  ->on('products')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('products')
+                ->onDelete('cascade');
         });
     }
 
