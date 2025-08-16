@@ -3,7 +3,7 @@
     <!-- Hero Section -->
     <div class="bg-[#0ABAB5] text-white py-12 md:py-20">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-2">Selamat Datang di TokoBuku Online</h2>
+            <h2 class="text-3xl md:text-4xl font-bold mb-2">Selamat Datang </h2>
             <h3 class="text-xl md:text-2xl mb-8">Temukan buku berkualitas dengan harga terbaik</h3>
             <a href="#produk" class="inline-block bg-white text-[#0ABAB5] font-bold rounded-full py-3 px-6 md:py-4 md:px-8 shadow-lg uppercase tracking-wider hover:bg-gray-100 transition duration-300">
                 Lihat Koleksi Buku
