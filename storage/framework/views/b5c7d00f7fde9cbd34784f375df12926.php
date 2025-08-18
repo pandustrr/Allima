@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Admin - <?php echo e(config('app.name')); ?></title>
+    <title>Admin</title>
 
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
 
@@ -14,7 +14,6 @@
 </head>
 
 <body class="bg-gray-100">
-    <!-- Sidebar dan Konten Utama -->
     <div class="flex h-screen">
         <!-- Sidebar -->
         <div class="hidden md:flex md:flex-shrink-0">
@@ -44,6 +43,21 @@
                             <i class="fas fa-users mr-3"></i>
                             Manajemen User
                         </a>
+                        <!-- Account Settings -->
+                        <div class="mt-4 border-t border-blue-700 pt-4">
+                            <p class="px-4 py-2 text-sm font-semibold text-blue-300">Account Settings</p>
+                            <a href="<?php echo e(route('admin.account.profile')); ?>"
+                                class="flex items-center px-4 py-2 text-sm font-medium rounded-lg <?php echo e(request()->routeIs('admin.account.profile') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
+                                <i class="fas fa-user mr-3"></i>
+                                Profile
+                            </a>
+
+                            <a href="<?php echo e(route('admin.account.change-password')); ?>"
+                                class="flex items-center px-4 py-2 text-sm font-medium rounded-lg <?php echo e(request()->routeIs('admin.account.change-password') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
+                                <i class="fas fa-key mr-3"></i>
+                                Change Password
+                            </a>
+                        </div>
                     </nav>
                 </div>
                 <div class="p-4 border-t border-blue-700">
@@ -134,6 +148,20 @@
                         <i class="fas fa-users mr-3"></i>
                         User
                     </a>
+                    <div class="mt-4 border-t border-blue-700 pt-4">
+                        <p class="px-4 py-2 text-sm font-semibold text-blue-300">Account Settings</p>
+                        <a href="<?php echo e(route('admin.account.profile')); ?>"
+                            class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg <?php echo e(request()->routeIs('admin.account.profile') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
+                            <i class="fas fa-user mr-3"></i>
+                            Profile
+                        </a>
+
+                        <a href="<?php echo e(route('admin.account.change-password')); ?>"
+                            class="flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg <?php echo e(request()->routeIs('admin.account.change-password') ? 'bg-blue-700' : 'hover:bg-blue-700'); ?>">
+                            <i class="fas fa-key mr-3"></i>
+                            Change Password
+                        </a>
+                    </div>
                 </nav>
             </div>
             <div class="p-4 border-t border-blue-700">
@@ -148,8 +176,26 @@
             </div>
         </div>
     </div>
-
 </body>
 
 </html>
+<script>
+    // Toggle sidebar mobile
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const sidebarClose = document.querySelector('.sidebar-close');
+    const mobileSidebar = document.getElementById('mobile-sidebar');
+
+    sidebarToggle.addEventListener('click', () => {
+        mobileSidebar.classList.remove('hidden');
+    });
+
+    sidebarClose.addEventListener('click', () => {
+        mobileSidebar.classList.add('hidden');
+    });
+
+    // Klik di overlay untuk menutup
+    mobileSidebar.querySelector('div[aria-hidden="true"]').addEventListener('click', () => {
+        mobileSidebar.classList.add('hidden');
+    });
+</script>
 <?php /**PATH E:\Pandu-Projek\e-com\resources\views/admin/layouts/app.blade.php ENDPATH**/ ?>

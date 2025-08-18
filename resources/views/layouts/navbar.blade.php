@@ -5,14 +5,19 @@
             <div class="flex items-center">
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center">
-                    <span class="text-xl font-bold text-gray-800">'Allima</span>
+                    <span class="text-xl font-bold text-gray-800">'Allimna</span>
                 </a>
 
                 <!-- Menu Desktop -->
                 <div class="hidden md:ml-8 md:flex md:space-x-4">
-                    <a href="{{ route('home') }}" class="px-3 py-2 rounded-md text-sm font-medium text-[#0ABAB5] hover:bg-[#ADEED9]">Beranda</a>
-                    <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Tentang Kami</a>
-                    <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Kontak</a>
+                    <a href="{{ route('home') }}"
+                       class="px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('home') ? 'text-[#0ABAB5] bg-[#ADEED9]' : 'text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]' }}">
+                       Beranda
+                    </a>
+                    <a href="{{ route('kontak') }}"
+                       class="px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('kontak') ? 'text-[#0ABAB5] bg-[#ADEED9]' : 'text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]' }}">
+                       Kontak
+                    </a>
                 </div>
             </div>
 
@@ -20,28 +25,30 @@
             <div class="flex items-center space-x-4">
                 <!-- Keranjang -->
                 @auth
-                    <a href="{{ route('cart.index') }}" class="p-1 rounded-full text-gray-600 hover:text-[#0ABAB5] relative">
+                    <a href="{{ route('cart.index') }}" class="p-1 rounded-full text-gray-600 hover:text-[#0ABAB5] relative group">
                         <i class="fas fa-shopping-cart text-xl"></i>
                         <span class="cart-count {{ auth()->user()->cart_items_count == 0 ? 'hidden' : '' }} absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-[#0ABAB5] rounded-full">
                             {{ auth()->user()->cart_items_count }}
                         </span>
+                        <span class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-[#0ABAB5] group-hover:w-1/2 group-hover:transition-all"></span>
+                        <span class="absolute -bottom-1 right-1/2 w-0 h-0.5 bg-[#0ABAB5] group-hover:w-1/2 group-hover:transition-all"></span>
                     </a>
                 @endauth
 
                 <!-- Login/Logout -->
                 @auth
-                    <div class="hidden md:flex items-center space-x-2 ml-4">
+                    <div class="hidden md:flex items-center space-x-4 ml-4">
                         <span class="text-sm text-gray-600">Halo, {{ Auth::user()->username }}</span>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="text-sm text-gray-600 hover:text-[#0ABAB5]">
-                                <i class="fas fa-sign-out-alt"></i>
+                            <button type="submit" class="text-sm text-gray-600 hover:text-[#0ABAB5] flex items-center">
+                                <i class="fas fa-sign-out-alt mr-1"></i> Keluar
                             </button>
                         </form>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="hidden md:block text-sm text-gray-600 hover:text-[#0ABAB5] px-3 py-2">
-                        <i class="fas fa-sign-in-alt mr-1"></i> Masuk
+                    <a href="{{ route('login') }}" class="hidden md:flex items-center text-sm text-gray-600 hover:text-[#0ABAB5] px-3 py-2">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Masuk
                     </a>
                 @endauth
 
@@ -57,13 +64,19 @@
 
     <!-- Menu Mobile -->
     <div class="md:hidden hidden" id="mobile-menu">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white">
-            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-[#0ABAB5] bg-[#ADEED9]">Beranda</a>
-            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Tentang Kami</a>
-            <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">Kontak</a>
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-100">
+            <a href="{{ route('home') }}"
+               class="block px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('home') ? 'text-[#0ABAB5] bg-[#ADEED9]' : 'text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]' }}">
+               Beranda
+            </a>
+            <a href="{{ route('kontak') }}"
+               class="block px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('kontak') ? 'text-[#0ABAB5] bg-[#ADEED9]' : 'text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]' }}">
+               Kontak
+            </a>
 
             @auth
-                <a href="{{ route('cart.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">
+                <a href="{{ route('cart.index') }}"
+                   class="block px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('cart.*') ? 'text-[#0ABAB5] bg-[#ADEED9]' : 'text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]' }}">
                     <i class="fas fa-shopping-cart mr-2"></i> Keranjang
                     <span class="ml-1 bg-[#0ABAB5] text-white text-xs px-2 py-0.5 rounded-full">
                         {{ auth()->user()->cart_items_count }}
@@ -82,7 +95,8 @@
                     </form>
                 </div>
             @else
-                <a href="{{ route('login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]">
+                <a href="{{ route('login') }}"
+                   class="block px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('login') ? 'text-[#0ABAB5] bg-[#ADEED9]' : 'text-gray-600 hover:text-[#0ABAB5] hover:bg-[#ADEED9]' }}">
                     <i class="fas fa-sign-in-alt mr-2"></i> Masuk
                 </a>
             @endauth
@@ -91,7 +105,18 @@
 </nav>
 
 <script>
-    document.querySelector('.mobile-menu-button')?.addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.toggle('hidden');
+    const menuButton = document.querySelector('.mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuButton?.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // Tutup menu jika klik di luar
+    document.addEventListener('click', (e) => {
+        if (!mobileMenu.contains(e.target) && !menuButton.contains(e.target)) {
+            mobileMenu.classList.add('hidden');
+        }
     });
 </script>
+

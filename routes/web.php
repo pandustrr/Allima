@@ -1,20 +1,23 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\SalesController;
+use App\Http\Controllers\Admin\AdminAccountController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
-// Public Routes (bisa diakses tanpa login)
+// Rute Publik (tanpa login)
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/kontak', [ContactController::class, 'index'])->name('kontak');
 Route::get('/produk/{product}', [ProductController::class, 'show'])->name('product.show');
 
-// Authentication Routes
+// Rute Autentikasi
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -22,9 +25,9 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Protected User Routes (harus login)
+// Rute Pengguna (harus login)
 Route::middleware('auth')->group(function () {
-    // Cart Routes
+    // Rute Keranjang
     Route::post('/produk/{product}/tambah-keranjang', [CartController::class, 'store'])->name('cart.add');
 
     Route::prefix('keranjang')->group(function () {
@@ -37,18 +40,28 @@ Route::middleware('auth')->group(function () {
     Route::get('/terima-kasih', [CartController::class, 'thankYou'])->name('cart.thankyou');
 });
 
-// Admin Routes
 Route::prefix('admin')->group(function () {
-    // Auth routes
-    Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('login', [AdminAuthController::class, 'login']);
-    Route::post('logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-    // Dashboard dan route lainnya
+    // Login Admin (guest)
+    Route::middleware('guest:admin')->group(function () {
+        Route::get('login', [AdminAuthController::class, 'showLoginForm'])
+            ->name('admin.login');
+        Route::post('login', [AdminAuthController::class, 'login'])
+            ->name('admin.login.submit');
+    });
+
+    // Logout Admin
+    Route::post('logout', [AdminAuthController::class, 'logout'])
+        ->name('admin.logout');
+
+    // Rute yang membutuhkan autentikasi admin
     Route::middleware(['auth:admin'])->group(function () {
-        Route::get('dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-        // Product CRUD
+        // Dashboard
+        Route::get('dashboard', [AdminController::class, 'dashboard'])
+            ->name('admin.dashboard');
+
+        // Manajemen Produk
         Route::resource('products', AdminController::class)->names([
             'index' => 'admin.products.index',
             'create' => 'admin.products.create',
@@ -59,7 +72,7 @@ Route::prefix('admin')->group(function () {
             'destroy' => 'admin.products.destroy',
         ]);
 
-        // User Management
+        // Manajemen User
         Route::resource('users', UserController::class)->names([
             'index' => 'admin.users.index',
             'create' => 'admin.users.create',
@@ -69,12 +82,33 @@ Route::prefix('admin')->group(function () {
             'destroy' => 'admin.users.destroy',
         ])->except(['show']);
 
-        // Sales Management
-        Route::prefix('sales')->group(function () {
-            Route::get('/', [SalesController::class, 'index'])->name('admin.sales.index');
-            Route::get('/{order}', [SalesController::class, 'show'])->name('admin.sales.show');
-            Route::delete('/sales/{order}', [SalesController::class, 'destroy'])->name('admin.sales.destroy');
-            Route::post('/{order}/update-status', [SalesController::class, 'updateStatus'])->name('admin.sales.update-status');
+        // Manajemen Penjualan
+        Route::prefix('penjualan')->group(function () {
+            Route::get('/', [SalesController::class, 'index'])
+                ->name('admin.sales.index');
+            Route::get('/{order}', [SalesController::class, 'show'])
+                ->name('admin.sales.show');
+            Route::delete('/{order}', [SalesController::class, 'destroy'])
+                ->name('admin.sales.destroy');
+            Route::post('/{order}/update-status', [SalesController::class, 'updateStatus'])
+                ->name('admin.sales.update-status');
         });
+
+        // Manajemen Akun Admin
+        Route::prefix('akun')->group(function () {
+
+            // Profil Admin
+            Route::get('profil', [AdminAccountController::class, 'editProfile'])
+                ->name('admin.account.profile');
+            Route::put('profil', [AdminAccountController::class, 'updateProfile'])
+                ->name('admin.account.profile.update');
+
+            // Ubah Password Admin
+            Route::get('password', [AdminAccountController::class, 'editPassword'])
+                ->name('admin.account.change-password');
+            Route::put('password', [AdminAccountController::class, 'updatePassword'])
+                ->name('admin.account.change-password.update');
+        });
+
     });
 });

@@ -4,19 +4,38 @@
 <div class="bg-white rounded shadow p-6">
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-semibold">Laporan Penjualan</h2>
-        <div class="flex space-x-2">
-            <a href="<?php echo e(route('admin.sales.index', ['period' => 'daily'])); ?>"
-                class="px-4 py-2 rounded <?php echo e($period === 'daily' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'); ?>">
-                Harian
-            </a>
-            <a href="<?php echo e(route('admin.sales.index', ['period' => 'weekly'])); ?>"
-                class="px-4 py-2 rounded <?php echo e($period === 'weekly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'); ?>">
-                Mingguan
-            </a>
-            <a href="<?php echo e(route('admin.sales.index', ['period' => 'monthly'])); ?>"
-                class="px-4 py-2 rounded <?php echo e($period === 'monthly' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-800'); ?>">
-                Bulanan
-            </a>
+
+        <!-- Dropdown Periode -->
+        <div class="relative inline-block text-left">
+            <button id="periodDropdownButton" type="button"
+                class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                aria-expanded="true" aria-haspopup="true">
+                <?php if($period === 'daily'): ?>
+                    Harian
+                <?php elseif($period === 'weekly'): ?>
+                    Mingguan
+                <?php else: ?>
+                    Bulanan
+                <?php endif; ?>
+                <i class="fas fa-chevron-down ml-2"></i>
+            </button>
+
+            <div id="periodDropdownMenu" class="hidden origin-top-right absolute right-0 mt-2 w-36 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                <div class="py-1">
+                    <a href="<?php echo e(route('admin.sales.index', ['period' => 'daily'])); ?>"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?php echo e($period === 'daily' ? 'font-semibold bg-gray-100' : ''); ?>">
+                        Harian
+                    </a>
+                    <a href="<?php echo e(route('admin.sales.index', ['period' => 'weekly'])); ?>"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?php echo e($period === 'weekly' ? 'font-semibold bg-gray-100' : ''); ?>">
+                        Mingguan
+                    </a>
+                    <a href="<?php echo e(route('admin.sales.index', ['period' => 'monthly'])); ?>"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 <?php echo e($period === 'monthly' ? 'font-semibold bg-gray-100' : ''); ?>">
+                        Bulanan
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -64,35 +83,35 @@
                     <td class="py-2 px-4 border-b border-gray-200"><?php echo e($order->pgtpq); ?></td>
                     <td class="py-2 px-4 border-b border-gray-200">Rp <?php echo e(number_format($order->total_amount, 0, ',', '.')); ?></td>
                     <td class="py-2 px-4 border-b border-gray-200">
-                    <span class="px-2 py-1 text-xs rounded-full
+                        <span class="px-2 py-1 text-xs rounded-full
                         <?php if($order->status === 'selesai'): ?> bg-green-100 text-green-800
                         <?php elseif($order->status === 'dibatalkan'): ?> bg-red-100 text-red-800
                         <?php else: ?> bg-yellow-100 text-yellow-800 <?php endif; ?>">
-                        <?php echo e(\App\Models\Order::STATUSES[$order->status] ?? ucfirst($order->status)); ?>
+                            <?php echo e(\App\Models\Order::STATUSES[$order->status] ?? ucfirst($order->status)); ?>
 
-                    </span>
+                        </span>
                     </td>
                     <td class="py-2 px-4 border-b border-gray-200"><?php echo e($order->created_at->format('d M Y H:i')); ?></td>
-<td class="py-2 px-4 border-b border-gray-200">
-    <div class="flex space-x-2">
-        <a href="<?php echo e(route('admin.sales.show', $order)); ?>"
-           class="text-blue-600 hover:text-blue-900"
-           title="Detail">
-            <i class="fas fa-eye"></i>
-        </a>
-        <form action="<?php echo e(route('admin.sales.destroy', $order)); ?>"
-              method="POST"
-              onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini?')">
-            <?php echo csrf_field(); ?>
-            <?php echo method_field('DELETE'); ?>
-            <button type="submit"
-                    class="text-red-600 hover:text-red-900"
-                    title="Hapus">
-                <i class="fas fa-trash"></i>
-            </button>
-        </form>
-    </div>
-</td>
+                    <td class="py-2 px-4 border-b border-gray-200">
+                        <div class="flex space-x-2">
+                            <a href="<?php echo e(route('admin.sales.show', $order)); ?>"
+                               class="text-blue-600 hover:text-blue-900"
+                               title="Detail">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <form action="<?php echo e(route('admin.sales.destroy', $order)); ?>"
+                                  method="POST"
+                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini?')">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('DELETE'); ?>
+                                <button type="submit"
+                                        class="text-red-600 hover:text-red-900"
+                                        title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
@@ -104,6 +123,23 @@
 
     </div>
 </div>
+
+<!-- Script Dropdown -->
+<script>
+    const dropdownButton = document.getElementById('periodDropdownButton');
+    const dropdownMenu = document.getElementById('periodDropdownMenu');
+
+    dropdownButton.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    // Klik di luar untuk menutup dropdown
+    window.addEventListener('click', function(e) {
+        if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH E:\Pandu-Projek\e-com\resources\views/admin/sales/index.blade.php ENDPATH**/ ?>

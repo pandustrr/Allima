@@ -3,15 +3,27 @@
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <!-- Hero Section -->
-    <div class="bg-[#0ABAB5] text-white py-12 md:py-20">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-2">Selamat Datang </h2>
-            <h3 class="text-xl md:text-2xl mb-8">Temukan buku berkualitas dengan harga terbaik</h3>
-            <a href="#produk" class="inline-block bg-white text-[#0ABAB5] font-bold rounded-full py-3 px-6 md:py-4 md:px-8 shadow-lg uppercase tracking-wider hover:bg-gray-100 transition duration-300">
-                Lihat Koleksi Buku
-            </a>
-        </div>
+<div class="relative bg-gradient-to-r from-[#0ABAB5] to-[#06a69f] text-white">
+    <div class="container mx-auto px-6 py-20 md:py-28 text-center relative z-10 max-w-3xl">
+        <!-- Judul -->
+        <h2 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">
+            Selamat Datang
+        </h2>
+        <h3 class="text-lg md:text-2xl mb-10 opacity-90">
+            Pusat Pengadaan Buku <span class="font-semibold italic">‘Allima</span>
+        </h3>
+
+        <!-- Tombol -->
+        <a href="#produk"
+           class="inline-block bg-white text-[#0ABAB5] font-bold rounded-full py-3 px-8 md:py-4 md:px-10 shadow-xl hover:bg-gray-100 hover:scale-105 transform transition duration-300 ease-in-out">
+            📚 Lihat Koleksi Buku
+        </a>
     </div>
+
+    <!-- Background dekorasi -->
+    <div class="absolute inset-0 opacity-20 bg-[url('https://www.toptal.com/designers/subtlepatterns/patterns/books.png')] bg-cover"></div>
+</div>
+
 
     <!-- Product Section -->
     <section id="produk" class="container mx-auto px-4 sm:px-6 py-8 md:py-12">
